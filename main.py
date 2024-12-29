@@ -42,6 +42,11 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found")
     return item
 
+@app.get("/items/completed", response_model=List[TodoItem])
+def get_completed_items(completed: bool = True, db: Session = Depends(get_db)):
+    items = db.query(TodoItemModel).filter(TodoItemModel.completed == completed).all()
+    return items
+
 @app.post("/items", response_model=TodoItem)
 def create_item(item: TodoCreate, db: Session = Depends(get_db)):
     new_item = TodoItemModel(
@@ -74,8 +79,3 @@ def delete_item(item_id: int, db: Session = Depends(get_db)):
     db.delete(db_item)
     db.commit()
     return {"message": "Item deleted"}
-
-#  все айтемы
-
-#  удалить айтем по id
-
