@@ -35,6 +35,11 @@ def get_items(db: Session = Depends(get_db)):
     items = db.query(TodoItemModel).all()
     return items
 
+@app.get("/items/completed", response_model=List[TodoItem])
+def get_completed_items(completed: bool = True, db: Session = Depends(get_db)):
+    items = db.query(TodoItemModel).filter(TodoItemModel.completed == completed).all()
+    return items
+
 @app.get("/items/{item_id}", response_model=TodoItem)
 def get_item(item_id: int, db: Session = Depends(get_db)):
     item = db.query(TodoItemModel).filter(TodoItemModel.id == item_id).first()
